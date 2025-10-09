@@ -1,0 +1,58 @@
+﻿using System.Net;
+using Application.Exceptions;
+using Microsoft.Extensions.Logging;
+using Infrastructure.Identity.Representations.Requests;
+using Application.Abstractions.Identity;
+using Application.Dtos.Responses;
+
+namespace Infrastructure.Identity;
+
+internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakClient, TokenKeyCloackCLient tokenKeyCloackCLient, ILogger<IdentityProviderService> logger)
+    : IIdentityProviderService
+{
+    // POST /admin/realms/{realm}/users
+    public async Task<LoginUserResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
+    {
+
+        var authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
+        return new LoginUserResponse()
+        {
+            AccessToken = authResponse.AccessToken,
+            RefreshToken = authResponse.RefreshToken
+        };
+    }
+
+    public Task<LoginUserResponse> RefreshUserAsync(string token, CancellationToken cancellationToken = default)
+    {
+        var authResponse = tokenKeyCloackCLient.RefreshTokenAsync(token, cancellationToken);
+        return Task.FromResult(new LoginUserResponse()
+        {
+            AccessToken = authResponse.Result.AccessToken,
+            RefreshToken = authResponse.Result.RefreshToken
+        });
+    }
+
+
+    public async Task<string> RegisterUserAsync(UserModel user, CancellationToken cancellationToken = default)
+    {
+        var userRepresentation = new UserRepresentation(
+            user.Email,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            true,
+            true,
+            [new CredentialRepresentation("password", user.Password, false)]);
+
+        try
+        {
+            string identityId = await adminKeyCloakClient.RegisterUserAsync(userRepresentation, cancellationToken);
+            return identityId;
+        }
+        catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.Conflict)
+        {
+            logger.LogError("User registration failed {exception}", exception);
+            throw new ConflictException("User.Conflict.Email", user.Email);
+        }
+    }
+}

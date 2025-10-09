@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  chat.database:
+    image: postgres
+    container_name: Chat.Database
+    environment:
+      - POSTGRES_DB=chat
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./containers/postgresql/data/:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+    mem_limit: 256m
+    cpus: 0.25
+
+  chat.identity.database:
+    image: postgres
+    container_name: Chat.Identity.Database
+    environment:
+      - POSTGRES_DB=chat_identity
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./containers/postgresql/identity_data/:/var/lib/postgresql/data
+    ports:
+      - "25433:5432"
+    mem_limit: 256m
+    cpus: 0.25
+
+  chat.identity:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: Chat.Identity
+    command: start-dev --import-realm
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://chat.identity.database:5432/chat_identity?currentSchema=public
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+    depends_on:
+      - chat.database
+    volumes:
+      - ./containers/keycloak/data:/opt/keycloak/data
+      - ./files:/opt/keycloak/data/import
+    ports:
+      - 18080:8080
+      - 19000:9000
+    mem_limit: 1g
+    cpus: 1.0
+
+  chat.api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: Chat.Api
+    env_file:
+      - .env
+    ports:
+      - "5000:8080"
