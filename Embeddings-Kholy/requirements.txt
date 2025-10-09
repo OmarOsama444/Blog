@@ -1,0 +1,5 @@
+sentence-transformers==3.0.1
+numpy>=1.26.0
+pandas>=2.1.0
+faiss-cpu>=1.7.4
+scikit-learn>=1.4.0
