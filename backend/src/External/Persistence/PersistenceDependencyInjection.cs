@@ -17,7 +17,7 @@ public static class PersistenceDependencyInjection
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         string dbConnectionString = configuration.GetConnectionString("RommieDb")!;
-        services.AddDbContext<ChatDbContext>((sp, options) =>
+        services.AddDbContext<BlogDbContext>((sp, options) =>
         {
             options
                 .UseNpgsql(dbConnectionString, op => op.MigrationsAssembly(AssemblyRefrence.Assembly))
@@ -29,12 +29,8 @@ public static class PersistenceDependencyInjection
         services.Configure<OutBoxOptions>(configuration.GetSection("OutBox"));
         services.AddScoped<IDbConnectionFactory>(x => new DbConnectionFactory(dbConnectionString));
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
-        services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
-        services.AddScoped<IAiChatHistoryRepository, AiChatHistoryRepository>();
-        services.AddScoped<IGroupRepository, GroupRepository>();
-        services.AddScoped<IGroupUserRepository, GroupUserRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<ChatDbContext>());
+        services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<BlogDbContext>());
         // adding quartz for background jobs 
         services.AddQuartz();
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);

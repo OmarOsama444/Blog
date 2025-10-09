@@ -1,8 +1,9 @@
 using System.Net.Http.Json;
-using Infrastructure.Identity.Representations.Responses;
+using Infrastructure.Dtos.Responses;
+using Infrastructure.Options;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.Identity
+namespace Infrastructure.Clients
 {
     internal class TokenKeyCloackCLient(HttpClient httpClient, IOptions<KeyCloakOptions> options)
     {

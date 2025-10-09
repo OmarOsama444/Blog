@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Identity.Representations.Responses
+namespace Infrastructure.Dtos.Responses
 {
     public class LoginResponseRepresentation
     {

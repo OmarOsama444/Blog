@@ -1,4 +1,4 @@
-namespace Infrastructure.Identity.Representations.Requests;
+namespace Infrastructure.Dtos.Requests;
 
 internal sealed record RoleRepresentation(
     string Id,
