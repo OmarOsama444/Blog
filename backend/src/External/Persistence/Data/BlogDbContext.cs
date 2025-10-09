@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Persistence.Data;
 
-public class ChatDbContext(DbContextOptions<ChatDbContext> options) : DbContext(options), IUnitOfWork
+public class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbContext(options), IUnitOfWork
 {
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<OutboxMessage> OutboxMessages { get; set; }

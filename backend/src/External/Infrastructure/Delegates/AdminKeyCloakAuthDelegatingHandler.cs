@@ -1,9 +1,10 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+using Infrastructure.Options;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.Identity;
+namespace Infrastructure.Delegates;
 
 internal sealed class AdminKeyCloakAuthDelegatingHandler(IOptions<KeyCloakOptions> options) : DelegatingHandler
 {

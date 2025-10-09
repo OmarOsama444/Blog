@@ -1,8 +1,9 @@
 ﻿using System.Net.Http.Json;
-using Infrastructure.Identity.Representations.Requests;
+using Infrastructure.Dtos.Requests;
+using Infrastructure.Options;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.Identity;
+namespace Infrastructure.Clients;
 
 internal sealed class AdminKeyCloakClient(HttpClient httpClient, IOptions<KeyCloakOptions> options)
 {

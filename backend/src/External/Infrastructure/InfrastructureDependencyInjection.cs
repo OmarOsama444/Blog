@@ -4,7 +4,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication;
 using Application.Abstractions.Identity;
 using Infrastructure.Authentication;
-using Infrastructure.Identity;
+using Infrastructure.Delegates;
+using Infrastructure.Clients;
+using Infrastructure.Options;
+using Infrastructure.Services;
 
 namespace Infrastructure;
 

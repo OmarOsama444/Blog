@@ -1,11 +1,12 @@
 ﻿using System.Net;
 using Application.Exceptions;
 using Microsoft.Extensions.Logging;
-using Infrastructure.Identity.Representations.Requests;
 using Application.Abstractions.Identity;
 using Application.Dtos.Responses;
+using Infrastructure.Clients;
+using Infrastructure.Dtos.Requests;
 
-namespace Infrastructure.Identity;
+namespace Infrastructure.Services;
 
 internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakClient, TokenKeyCloackCLient tokenKeyCloackCLient, ILogger<IdentityProviderService> logger)
     : IIdentityProviderService
