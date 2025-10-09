@@ -18,9 +18,6 @@ public static class ApplicationDependencyInjection
         // Register the domain event dispatcher
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IGroupService, GroupService>();
-        services.AddScoped<IChatService, ChatService>();
-        services.AddScoped<IAiService, AiService>();
         // Register domain event handlers
         services.Scan(scan => scan
             .FromAssemblies(AssemblyRefrence.Assembly)
