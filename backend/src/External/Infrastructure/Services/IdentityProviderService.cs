@@ -5,6 +5,7 @@ using Application.Abstractions.Identity;
 using Application.Dtos.Responses;
 using Infrastructure.Clients;
 using Infrastructure.Dtos.Requests;
+using Application.Interfaces;
 
 namespace Infrastructure.Services;
 

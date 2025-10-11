@@ -1,6 +1,7 @@
-﻿using Application.Dtos.Responses;
+﻿using Application.Abstractions.Identity;
+using Application.Dtos.Responses;
 
-namespace Application.Abstractions.Identity;
+namespace Application.Interfaces;
 
 public interface IIdentityProviderService
 {

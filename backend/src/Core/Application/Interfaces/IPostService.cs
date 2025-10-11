@@ -5,5 +5,5 @@ namespace Application.Interfaces;
 
 public interface IPostService
 {
-    public Task<Post> CreatePostAsync(Guid userId, CreatePostRequestDto createPostRequestDto, CancellationToken cancellationToken);
+    public Task<Post> CreatePostAsync(Guid userId, CreatePostRequestDto createPostRequestDto, CancellationToken cancellationToken = default);
 }
