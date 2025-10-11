@@ -25,7 +25,7 @@ public static class PersistenceDependencyInjection
                 .AddInterceptors(sp.GetRequiredService<PublishOutboxMessagesInterceptor>());
         });
         services.Decorate(typeof(IDomainEventHandler<>), typeof(OutboxIdempotentDomainEventHandlerDecorator<>));
-        services.TryAddSingleton<PublishOutboxMessagesInterceptor>();
+        services.AddScoped<PublishOutboxMessagesInterceptor>();
         services.Configure<OutBoxOptions>(configuration.GetSection("OutBox"));
         services.AddScoped<IDbConnectionFactory>(x => new DbConnectionFactory(dbConnectionString));
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));

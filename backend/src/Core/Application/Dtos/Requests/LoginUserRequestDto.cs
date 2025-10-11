@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using Application.Helpers;
 
-namespace Application.Dtos.Requests
+namespace Application.Dtos.Requests;
+
+public class LoginUserRequestDto
 {
-    public class LoginUserRequestDto
-    {
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
+    public string Email { get; set; } = string.Empty;
+    [JsonConverter(typeof(MaskedStringConverter))]
+    public string Password { get; set; } = string.Empty;
 }

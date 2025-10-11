@@ -37,9 +37,15 @@ public class ProcessOutboxJob(
                         TypeNameHandling = TypeNameHandling.All
                     }
                 )!;
-                using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
-                IDomainEventDispatcher publisher = serviceScope.ServiceProvider.GetRequiredService<IDomainEventDispatcher>();
-                await publisher.DispatchAsync(domainEvent);
+                using (logger.BeginScope(new Dictionary<string, object>
+                {
+                    ["CorrelationId"] = outboxMessage.CorrelationId
+                }))
+                {
+                    using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
+                    IDomainEventDispatcher publisher = serviceScope.ServiceProvider.GetRequiredService<IDomainEventDispatcher>();
+                    await publisher.DispatchAsync(domainEvent);
+                }
             }
             catch (Exception caughtException)
             {
@@ -62,6 +68,7 @@ public class ProcessOutboxJob(
         $"""
         SELECT
         id AS {nameof(OutboxMessage.Id)},
+        correlation_id as {nameof(OutboxMessage.CorrelationId)},
         type AS {nameof(OutboxMessage.Type)},
         content AS {nameof(OutboxMessage.Content)},
         occurred_on_utc AS {nameof(OutboxMessage.OccurredOnUtc)},

@@ -8,7 +8,7 @@ namespace Persistence.EntityConfigs
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
-            builder.HasKey(x => x.PostId);
+            builder.HasKey(x => x.Id);
             builder.HasOne(x => x.User)
                 .WithMany(x => x.Posts)
                 .HasForeignKey(x => x.UserId);

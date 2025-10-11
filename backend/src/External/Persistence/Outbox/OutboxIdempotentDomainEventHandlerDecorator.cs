@@ -20,7 +20,7 @@ public class OutboxIdempotentDomainEventHandlerDecorator<TDomainEvent>(
         IDomainEvent domainEvent = notification;
         var outboxConsumerMessage = new OutboxConsumerMessage
         {
-            id = domainEvent.Id,
+            Id = domainEvent.Id,
             HandlerName = innerHandler.GetType().Name
         };
 
@@ -29,17 +29,17 @@ public class OutboxIdempotentDomainEventHandlerDecorator<TDomainEvent>(
 
         if (exists > 0)
         {
-            logger.LogWarning("Duplicate event detected: {EventType} with ID {EventId}. Skipping processing.", typeof(TDomainEvent).Name, outboxConsumerMessage.id);
+            logger.LogWarning("Duplicate event detected: {EventType} with ID {EventId}. Skipping processing.", typeof(TDomainEvent).Name, outboxConsumerMessage.Id);
             return;
         }
 
-        logger.LogInformation("Processing event {EventType} with ID {EventId}.", typeof(TDomainEvent).Name, outboxConsumerMessage.id);
+        logger.LogInformation("Processing event {EventType} with ID {EventId}.", typeof(TDomainEvent).Name, outboxConsumerMessage.Id);
         await innerHandler.HandleAsync(notification, cancellationToken);
 
         const string insertQuery = $"INSERT INTO outbox_consumer_messages (id, handler_name) VALUES (@Id, @HandlerName)";
         await connection.ExecuteAsync(insertQuery, outboxConsumerMessage);
 
-        logger.LogInformation("Stored event {EventType} with ID {EventId} in OutboxConsumerMessages.", typeof(TDomainEvent).Name, outboxConsumerMessage.id);
+        logger.LogInformation("Stored event {EventType} with ID {EventId} in OutboxConsumerMessages.", typeof(TDomainEvent).Name, outboxConsumerMessage.Id);
 
     }
 

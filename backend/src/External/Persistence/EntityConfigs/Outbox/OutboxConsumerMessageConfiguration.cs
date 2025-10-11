@@ -8,6 +8,6 @@ public class OutboxConsumerMessageConfiguration : IEntityTypeConfiguration<Outbo
 {
     public void Configure(EntityTypeBuilder<OutboxConsumerMessage> builder)
     {
-        builder.HasKey(msg => new { msg.id, msg.HandlerName });
+        builder.HasKey(msg => new { msg.Id, msg.HandlerName });
     }
 }

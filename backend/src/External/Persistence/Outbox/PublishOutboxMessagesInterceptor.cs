@@ -3,24 +3,28 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using Domain.Entities.Outbox;
 using Domain.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace Persistence.Outbox;
 
-public class PublishOutboxMessagesInterceptor : SaveChangesInterceptor
+public class PublishOutboxMessagesInterceptor(
+    IHttpContextAccessor httpContextAccessor
+) : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
+
+        var correlationId = httpContextAccessor.HttpContext?.Items["CorrelationId"]?.ToString()!;
         if (eventData.Context is not null)
         {
-            InsertOutboxMessages(eventData.Context);
+            InsertOutboxMessages(eventData.Context, correlationId);
         }
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
-
-    public static void InsertOutboxMessages(DbContext context)
+    public static void InsertOutboxMessages(DbContext context, String correlationId)
     {
         var outBoxMessages = context
             .ChangeTracker
@@ -34,6 +38,7 @@ public class PublishOutboxMessagesInterceptor : SaveChangesInterceptor
             })
             .Select(domainEvent => new OutboxMessage()
             {
+                CorrelationId = correlationId,
                 Id = domainEvent.Id,
                 OccurredOnUtc = domainEvent.CreatedOnUtc,
                 Type = domainEvent.GetType().Name,

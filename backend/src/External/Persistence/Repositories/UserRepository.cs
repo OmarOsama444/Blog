@@ -9,21 +9,12 @@ using Persistence.Data;
 
 namespace Persistence.Repositories
 {
-    public class UserRepository(ChatDbContext chatDbContext) : IUserRepository
+    public class UserRepository(BlogDbContext blogDbContext) : IUserRepository
     {
         public Task<User?> GetByEmail(string email)
         {
-            return chatDbContext.Users
+            return blogDbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
-        }
-
-        public async Task<ICollection<User>> GetByGroupId(Guid groupId)
-        {
-            return await chatDbContext.GroupUsers
-                .Where(gu => gu.GroupId == groupId)
-                .Include(x => x.User)
-                .Select(gu => gu.User)
-                .ToListAsync();
         }
     }
 }

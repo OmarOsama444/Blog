@@ -11,15 +11,14 @@ using Application.Exceptions;
 namespace Application.Services;
 
 public class UserService(
-    IUserRepository userRepository,
-    IGenericRepository<User, Guid> userGenericRepository,
-    IIdentityProviderService identityProviderService,
-    ILogger<UserService> logger,
-    IUnitOfWork unitOfWork) : IUserService
+IUserRepository userRepository,
+IGenericRepository<User, Guid> userGenericRepository,
+IIdentityProviderService identityProviderService,
+ILogger<UserService> logger,
+IUnitOfWork unitOfWork) : IUserService
 {
     public async Task<Guid> CreateUserAsync(CreateUserRequestDto createUserRequestDto, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Creating user with email: {Email}", createUserRequestDto.Email);
         User? user = await userRepository.GetByEmail(createUserRequestDto.Email);
         if (user != null)
         {
@@ -33,9 +32,9 @@ public class UserService(
         return user.Id;
     }
 
-    public async Task<LoginUserResponse> LoginUserAsync(string email, string Password, CancellationToken cancellationToken = default)
+    public async Task<LoginUserResponse> LoginUserAsync(LoginUserRequestDto loginUserRequestDto, CancellationToken cancellationToken = default)
     {
-        return await identityProviderService.LoginUserAsync(email, Password, cancellationToken);
+        return await identityProviderService.LoginUserAsync(loginUserRequestDto.Email, loginUserRequestDto.Password, cancellationToken);
     }
 
     public async Task<LoginUserResponse> RefreshUserAsnc(RefreshTokenRequestDto refreshTokenRequestDto, CancellationToken cancellationToken = default)

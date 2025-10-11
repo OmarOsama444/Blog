@@ -52,6 +52,7 @@ if (app.Environment.IsDevelopment())
     app.AddMigrations();
 }
 app.UseMiddleware<ExceptionLocalizationMiddleware>();
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
