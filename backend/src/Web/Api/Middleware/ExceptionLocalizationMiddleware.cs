@@ -5,9 +5,12 @@ namespace Api.Middleware;
 public class ExceptionLocalizationMiddleware
 {
     private readonly RequestDelegate _next;
-    public ExceptionLocalizationMiddleware(RequestDelegate next)
+    private readonly ILogger<ExceptionLocalizationMiddleware> _logger;
+
+    public ExceptionLocalizationMiddleware(RequestDelegate next, ILogger<ExceptionLocalizationMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -20,6 +23,16 @@ public class ExceptionLocalizationMiddleware
         {
             var key = $"{ex.ErrorCode}_{ex.StatusCode}";
             var localizedMessage = key + " " + string.Join(", ", ex.MessageArgs);
+
+            _logger.LogWarning(ex,
+                "Localized exception occurred. Path: {Path}, Method: {Method}, StatusCode: {StatusCode}, ErrorCode: {ErrorCode}, Args: {Args}",
+                context.Request.Path,
+                context.Request.Method,
+                ex.StatusCode,
+                ex.ErrorCode,
+                string.Join(", ", ex.MessageArgs)
+            );
+
             context.Response.StatusCode = ex.StatusCode;
             context.Response.ContentType = "application/json";
 
@@ -30,8 +43,14 @@ public class ExceptionLocalizationMiddleware
                 message = localizedMessage
             });
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _logger.LogError(exception,
+                "Unhandled exception occurred. Path: {Path}, Method: {Method}",
+                context.Request.Path,
+                context.Request.Method
+            );
+
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";
 
@@ -44,4 +63,3 @@ public class ExceptionLocalizationMiddleware
         }
     }
 }
-

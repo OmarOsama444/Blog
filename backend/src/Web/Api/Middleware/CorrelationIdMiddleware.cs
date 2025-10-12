@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Logging;
+using Serilog.Context;
 
 namespace Api.Middleware
 {
@@ -14,13 +16,9 @@ namespace Api.Middleware
         {
             var correlationId = context.Request.Headers[CorrelationHeader].FirstOrDefault()
                                 ?? Guid.NewGuid().ToString();
-
+            logger.LogInformation("Correlation id : {correlationId}", correlationId);
             context.Response.Headers[CorrelationHeader] = correlationId;
-
-            using (logger.BeginScope(new Dictionary<string, object>
-            {
-                ["CorrelationId"] = correlationId
-            }))
+            using (LogContext.PushProperty("CorrelationId", correlationId))
             {
                 context.Items["CorrelationId"] = correlationId;
                 await _next(context);

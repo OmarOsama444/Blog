@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Application.Repositories;
 using Domain.Entities;
@@ -9,11 +5,11 @@ using Persistence.Data;
 
 namespace Persistence.Repositories
 {
-    public class UserRepository(BlogDbContext blogDbContext) : IUserRepository
+    public class UserRepository(AppDbContext context) : IUserRepository
     {
         public Task<User?> GetByEmail(string email)
         {
-            return blogDbContext.Users
+            return context.Users
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
     }

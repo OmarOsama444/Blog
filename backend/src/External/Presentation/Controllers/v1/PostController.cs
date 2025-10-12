@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Dtos.Requests;
+using Application.Dtos.Responses;
 using Application.Interfaces;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Presentation.Extensions;
 
 namespace Presentation.Controllers.v1
@@ -16,10 +10,22 @@ namespace Presentation.Controllers.v1
     public class PostController(IPostService postService) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<Post>> CreatePost(CreatePostRequestDto requestDto)
+        public async Task<ActionResult<PostResponseDto>> CreatePost([FromBody] CreatePostRequestDto requestDto)
         {
             var userid = User.GetUserId();
-            return await postService.CreatePostAsync(userid, requestDto);
+            return Ok(await postService.CreatePostAsync(userid, requestDto));
+        }
+        [HttpGet]
+        public async Task<ActionResult<ICollection<PostResponseDto>>> SearchPost([FromQuery] SearchPostRequestDto requestDto)
+        {
+            return Ok(await postService.SearchPost(requestDto));
+        }
+        [HttpDelete]
+        public async Task<ActionResult> DeletePost([FromBody] ICollection<Guid> PostIds)
+        {
+            var userid = User.GetUserId();
+            await postService.DeletePost(userid, PostIds);
+            return NoContent();
         }
     }
 }

@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Domain.Entities;
+
+namespace Application.Dtos.Responses
+{
+
+    public class PostResponseDto
+    {
+        public Guid Id { get; set; }
+        public string Slug { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public List<string> Tags { get; set; } = [];
+        public DateTime CreatedOnUtc { get; set; }
+    }
+}

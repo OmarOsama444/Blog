@@ -8,7 +8,7 @@ public static class MigrationsExtension
     public static void AddMigrations(this IApplicationBuilder application)
     {
         using var scope = application.ApplicationServices.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<BlogDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
     }
 }

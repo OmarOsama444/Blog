@@ -4,9 +4,9 @@ using Persistence.Data;
 
 namespace Persistence.Repositories;
 
-public class GenericRepository<T, TKey>(BlogDbContext context, ILogger<GenericRepository<T, TKey>> logger) : IGenericRepository<T, TKey> where T : class
+public class GenericRepository<T, TKey>(AppDbContext context, ILogger<GenericRepository<T, TKey>> logger) : IGenericRepository<T, TKey> where T : class
 {
-    private readonly BlogDbContext _context = context;
+    private readonly AppDbContext _context = context;
     private readonly ILogger<GenericRepository<T, TKey>> _logger = logger;
     public async Task<T?> GetById(TKey id)
     {

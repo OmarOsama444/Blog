@@ -9,7 +9,6 @@ namespace Domain.Entities
         public virtual User User { get; set; } = default!;
         public string Slug { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
-        [JsonIgnore]
         public string Content { get; set; } = string.Empty;
         public List<string> Tags { get; set; } = [];
         public List<float> Embeddings { get; set; } = [];

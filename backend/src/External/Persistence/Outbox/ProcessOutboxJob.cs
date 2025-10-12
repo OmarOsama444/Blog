@@ -9,6 +9,7 @@ using Quartz;
 using Application.Abstractions;
 using Domain.Entities.Outbox;
 using Domain.Abstractions;
+using Serilog.Context;
 
 namespace Persistence.Outbox;
 
@@ -37,10 +38,7 @@ public class ProcessOutboxJob(
                         TypeNameHandling = TypeNameHandling.All
                     }
                 )!;
-                using (logger.BeginScope(new Dictionary<string, object>
-                {
-                    ["CorrelationId"] = outboxMessage.CorrelationId
-                }))
+                using (LogContext.PushProperty("CorrelationId", outboxMessage.CorrelationId))
                 {
                     using IServiceScope serviceScope = serviceScopeFactory.CreateScope();
                     IDomainEventDispatcher publisher = serviceScope.ServiceProvider.GetRequiredService<IDomainEventDispatcher>();

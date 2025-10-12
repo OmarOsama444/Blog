@@ -15,13 +15,24 @@ internal sealed class IdentityProviderService(AdminKeyCloakClient adminKeyCloakC
     // POST /admin/realms/{realm}/users
     public async Task<LoginUserResponse> LoginUserAsync(string email, string password, CancellationToken cancellationToken = default)
     {
-
-        var authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
-        return new LoginUserResponse()
+        try
         {
-            AccessToken = authResponse.AccessToken,
-            RefreshToken = authResponse.RefreshToken
-        };
+            var authResponse = await tokenKeyCloackCLient.LoginUserAsync(email, password, cancellationToken);
+            return new LoginUserResponse()
+            {
+                AccessToken = authResponse.AccessToken,
+                RefreshToken = authResponse.RefreshToken
+            };
+        }
+        catch (HttpRequestException exception)
+        {
+            switch (exception.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    throw new NotAuthorizedException("Invalid.Creds");
+            }
+            throw new NotImplementedException("Unhandled Status Code At the LoginUserAsync in IdentityProviderService with message" + exception.Message);
+        }
     }
 
     public Task<LoginUserResponse> RefreshUserAsync(string token, CancellationToken cancellationToken = default)

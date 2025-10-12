@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Presentation.Fitlers;
 
 namespace Presentation
 {
@@ -7,7 +8,10 @@ namespace Presentation
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
             services
-                .AddControllers()
+                .AddControllers(options =>
+                {
+                    options.Filters.Add<LogActionFilter>();
+                })
                 .AddApplicationPart(typeof(PresentationDependencyInjection).Assembly);
             return services;
         }

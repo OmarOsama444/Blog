@@ -2,7 +2,6 @@ using Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Quartz;
 using Application.Repositories;
 using Application.Abstractions;
@@ -17,10 +16,13 @@ public static class PersistenceDependencyInjection
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         string dbConnectionString = configuration.GetConnectionString("RommieDb")!;
-        services.AddDbContext<BlogDbContext>((sp, options) =>
+        services.AddDbContext<AppDbContext>((sp, options) =>
         {
             options
-                .UseNpgsql(dbConnectionString, op => op.MigrationsAssembly(AssemblyRefrence.Assembly))
+                .UseNpgsql(dbConnectionString, op =>
+                {
+                    op.MigrationsAssembly(AssemblyRefrence.Assembly);
+                })
                 .UseSnakeCaseNamingConvention()
                 .AddInterceptors(sp.GetRequiredService<PublishOutboxMessagesInterceptor>());
         });
@@ -29,8 +31,9 @@ public static class PersistenceDependencyInjection
         services.Configure<OutBoxOptions>(configuration.GetSection("OutBox"));
         services.AddScoped<IDbConnectionFactory>(x => new DbConnectionFactory(dbConnectionString));
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+        services.AddScoped<IPostRepositroy, PostRepositroy>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<BlogDbContext>());
+        services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<AppDbContext>());
         // adding quartz for background jobs 
         services.AddQuartz();
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);

@@ -3,6 +3,7 @@ using Infrastructure;
 using Persistence;
 using Api.Middleware;
 using Api.Extensions;
+using Serilog;
 
 # region swagger configuration
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,13 @@ builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+// Replace default logging with Serilog
+builder.Host.UseSerilog();
 var app = builder.Build();
 app.UseStaticFiles();
 if (app.Environment.IsDevelopment())
@@ -51,8 +59,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.AddMigrations();
 }
-app.UseMiddleware<ExceptionLocalizationMiddleware>();
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<ExceptionLocalizationMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

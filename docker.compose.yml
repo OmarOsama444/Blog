@@ -17,7 +17,7 @@ services:
 
   blog.identity.database:
     image: postgres
-    container_name: blog.Identity.Database
+    container_name: blog.identity.database
     environment:
       - POSTGRES_DB=blog_identity
       - POSTGRES_USER=postgres
