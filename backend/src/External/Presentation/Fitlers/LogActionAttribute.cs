@@ -1,24 +1,45 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
 namespace Presentation.Fitlers
 {
-    public class LogActionFilter(ILogger<LogActionFilter> logger) : IAsyncActionFilter
+    public class LogActionFilter(ILogger<LogActionFilter> logger) : IAsyncActionFilter, IActionFilter
     {
         private readonly ILogger<LogActionFilter> _logger = logger;
+
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+            var actionName = context.ActionDescriptor.DisplayName;
+            if (context.Exception == null)
+            {
+                _logger.LogInformation("Action {ActionName} completed successfully", actionName);
+            }
+            else
+            {
+                _logger.LogError(context.Exception, "Action {ActionName} failed", actionName);
+            }
+        }
+
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+            var actionName = context.ActionDescriptor.DisplayName;
+            var arguments = context.ActionArguments;
+            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, JsonSerializer.Serialize(arguments));
+        }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var actionName = context.ActionDescriptor.DisplayName;
             var arguments = context.ActionArguments;
 
-            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, arguments);
+            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, JsonSerializer.Serialize(arguments));
 
-            var executedContext = await next(); // execute the action
+            var executedContext = await next();
 
             if (executedContext.Exception == null)
             {

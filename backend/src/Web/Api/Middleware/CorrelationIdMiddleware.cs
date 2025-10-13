@@ -11,7 +11,6 @@ namespace Api.Middleware
     {
         private readonly RequestDelegate _next = next;
         private const string CorrelationHeader = "X-Correlation-ID";
-
         public async Task InvokeAsync(HttpContext context, ILogger<CorrelationIdMiddleware> logger)
         {
             var correlationId = context.Request.Headers[CorrelationHeader].FirstOrDefault()

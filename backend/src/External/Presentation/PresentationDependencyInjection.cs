@@ -5,7 +5,7 @@ namespace Presentation
 {
     public static class PresentationDependencyInjection
     {
-        public static IServiceCollection AddPersistence(this IServiceCollection services)
+        public static IServiceCollection AddPresentation(this IServiceCollection services)
         {
             services
                 .AddControllers(options =>

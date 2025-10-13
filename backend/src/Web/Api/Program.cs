@@ -4,6 +4,7 @@ using Persistence;
 using Api.Middleware;
 using Api.Extensions;
 using Serilog;
+using Presentation;
 
 # region swagger configuration
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,7 @@ builder.Services.AddControllers();
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddPresentation();
 builder.Services.AddHttpContextAccessor();
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
