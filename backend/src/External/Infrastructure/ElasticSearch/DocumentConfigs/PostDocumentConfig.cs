@@ -6,8 +6,9 @@ namespace Infrastructure.DocumentConfigs
 {
     public class PostDocumentConfig : IDocumentTypeConfig<PostDocuemnt>
     {
-        public int Version => 1;
+        public int Version => 2;
         public string IndexName => "posts";
+        public string IndexVersionedName => $"{IndexName}_v{Version}";
         public TypeMappingDescriptor<PostDocuemnt> ConfigureIndex(TypeMappingDescriptor<PostDocuemnt> map)
         {
             return map
@@ -19,7 +20,7 @@ namespace Infrastructure.DocumentConfigs
                     .Text(s => s.Content, text => text.Analyzer("english"))
                     .Text(k => k.Tags, text => text.Analyzer("english"))
                     .DenseVector(d => d.Embedding, denseVector => denseVector
-                        .Dims(384)
+                        .Dims(768)
                         .Similarity(DenseVectorSimilarity.Cosine)
                         .Index(true)
                     )

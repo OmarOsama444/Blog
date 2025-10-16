@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sentence_transformers import SentenceTransformer
 
 app = FastAPI()
-model = SentenceTransformer("all-MiniLM-L6-v2") 
+model = SentenceTransformer("BAAI/bge-base-en-v1.5") 
 
 @app.post("/embed")
 def get_embedding(text: str):

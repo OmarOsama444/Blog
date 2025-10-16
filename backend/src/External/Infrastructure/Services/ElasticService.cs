@@ -20,7 +20,7 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
         return client.IndexAsync<PostDocuemnt>(postDocuemnt,
             d => d
                 .Id(postDocuemnt.Id)
-                .Index(new PostDocumentConfig().IndexName)
+                .Index(new PostDocumentConfig().IndexVersionedName)
             , cancellationToken);
     }
     public async Task<ICollection<PostResponseDto>> SearchPostSemantic(SearchPostRequestDto requestDto)

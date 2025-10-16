@@ -30,5 +30,9 @@ namespace Domain.Entities
             post.RaiseDomainEvent(new PostCreatedDomainEvent(post.Id));
             return post;
         }
+        public void DeletePost()
+        {
+            RaiseDomainEvent(new PostDeletedDomainEvent(Id));
+        }
     }
 }

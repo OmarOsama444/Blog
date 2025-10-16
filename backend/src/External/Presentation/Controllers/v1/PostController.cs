@@ -12,10 +12,13 @@ namespace Presentation.Controllers.v1
     {
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<PostResponseDto>> CreatePost([FromBody] CreatePostRequestDto requestDto)
+        public async Task<ActionResult<ICollection<PostResponseDto>>> CreatePost([FromBody] ICollection<CreatePostRequestDto> requestDtos)
         {
             var userid = User.GetUserId();
-            return Ok(await postService.CreatePostAsync(userid, requestDto));
+            ICollection<PostResponseDto> results = [];
+            foreach (var requestDto in requestDtos)
+                results.Add(await postService.CreatePostAsync(userid, requestDto));
+            return Ok(results);
         }
         [HttpGet]
         public async Task<ActionResult<ICollection<PostResponseDto>>> SearchPost([FromQuery] SearchPostRequestDto requestDto)

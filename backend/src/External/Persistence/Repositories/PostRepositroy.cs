@@ -12,6 +12,11 @@ namespace Persistence.Repositories
 {
     public class PostRepositroy(AppDbContext context) : IPostRepositroy
     {
+        public async Task<Post?> GetBySlug(string slug, CancellationToken cancellationToken = default)
+        {
+            return await context.Posts.FirstOrDefaultAsync(x => x.Slug == slug, cancellationToken);
+        }
+
         public async Task<ICollection<PostResponseDto>> SearchByFullText(string? Text, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
             IQueryable<Post> query = context

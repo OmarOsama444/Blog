@@ -11,7 +11,7 @@ namespace Infrastructure.Abstractions
     {
         public int Version { get; }
         public string IndexName { get; }
-        public string IndexVersionedName => $"{IndexName}_v{Version}";
+        public string IndexVersionedName { get; }
         public TypeMappingDescriptor<T> ConfigureIndex(TypeMappingDescriptor<T> map);
     }
 }

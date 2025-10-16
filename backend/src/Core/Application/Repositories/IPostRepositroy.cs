@@ -9,6 +9,7 @@ namespace Application.Repositories
 {
     public interface IPostRepositroy
     {
+        public Task<Post?> GetBySlug(string slug, CancellationToken cancellationToken = default);
         public Task<ICollection<PostResponseDto>> SearchByFullText(string? Text, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
     }
 }
