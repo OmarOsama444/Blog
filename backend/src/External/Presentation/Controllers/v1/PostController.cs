@@ -1,14 +1,16 @@
 using Application.Dtos.Requests;
 using Application.Dtos.Responses;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Extensions;
 
 namespace Presentation.Controllers.v1
 {
     [Route("api/v1/[controller]")]
-    public class PostController(IPostService postService) : ControllerBase
+    public class PostController(IPostService postService, IELasticService eLasticService) : ControllerBase
     {
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<PostResponseDto>> CreatePost([FromBody] CreatePostRequestDto requestDto)
         {
@@ -20,6 +22,13 @@ namespace Presentation.Controllers.v1
         {
             return Ok(await postService.SearchPost(requestDto));
         }
+
+        [HttpGet("semantic")]
+        public async Task<ActionResult<ICollection<PostResponseDto>>> GetAllPosts([FromQuery] SearchPostRequestDto requestDto)
+        {
+            return Ok(await eLasticService.SearchPostSemantic(requestDto));
+        }
+        [Authorize]
         [HttpDelete]
         public async Task<ActionResult> DeletePost([FromBody] ICollection<Guid> PostIds)
         {

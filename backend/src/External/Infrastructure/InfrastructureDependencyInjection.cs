@@ -8,6 +8,9 @@ using Infrastructure.Clients;
 using Infrastructure.Options;
 using Infrastructure.Services;
 using Application.Interfaces;
+using Infrastructure.Migrations;
+using Elastic.Clients.Elasticsearch;
+using Infrastructure.ElasticSearch;
 
 namespace Infrastructure;
 
@@ -15,6 +18,7 @@ public static class InfrastructureDependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddElasticSearch(configuration);
         services.Configure<KeyCloakOptions>(configuration.GetSection("KeyCloak"));
         services.AddTransient<AdminKeyCloakAuthDelegatingHandler>();
         services.AddHttpClient<AdminKeyCloakClient>((sp, client) =>
@@ -34,8 +38,10 @@ public static class InfrastructureDependencyInjection
             client.BaseAddress = new Uri(baseUrl);
         });
         services.AddScoped<IIdentityProviderService, IdentityProviderService>();
+        services.AddScoped<IELasticService, ElasticService>();
         services.AddScoped<IEmbeddingService, EmbeddingService>();
         services.AddScoped<IClaimsTransformation, KeyCloackClaimsTransformation>();
+        services.AddSingleton<ElasticMigrationManager>();
         services.AddAuthenticationInternal();
         return services;
     }

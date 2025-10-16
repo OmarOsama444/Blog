@@ -1,3 +1,4 @@
+using Infrastructure.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Data;
 
@@ -10,5 +11,7 @@ public static class MigrationsExtension
         using var scope = application.ApplicationServices.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         dbContext.Database.Migrate();
+        var elasticMigrationManager = scope.ServiceProvider.GetRequiredService<ElasticMigrationManager>();
+        elasticMigrationManager.Migrate();
     }
 }

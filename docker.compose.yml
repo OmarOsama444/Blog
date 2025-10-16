@@ -62,3 +62,25 @@ services:
       - .env
     ports:
       - "5000:8080"
+
+  blog.elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.5
+    container_name: blog.Elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=elasticpassword123
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./containers/elasticsearch/data:/usr/share/elasticsearch/data
+
+  blog.kibana:
+    image: docker.elastic.co/kibana/kibana:9.1.5
+    container_name: blog.Kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://blog.elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - blog.elasticsearch

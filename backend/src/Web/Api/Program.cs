@@ -50,8 +50,6 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateLogger();
-
-// Replace default logging with Serilog
 builder.Host.UseSerilog();
 var app = builder.Build();
 app.UseStaticFiles();

@@ -1,8 +1,9 @@
-using System.Text.Json.Serialization;
+using Domain.Abstractions;
+using Domain.Events;
 
 namespace Domain.Entities
 {
-    public class Post
+    public class Post : Entity
     {
         public Guid UserId { get; set; }
         public Guid Id { get; set; }
@@ -15,7 +16,7 @@ namespace Domain.Entities
         public DateTime CreatedOnUtc { get; set; }
         public static Post Create(Guid UserId, string Slug, string Title, string Content, ICollection<string> Tags, ICollection<float> Embeddings)
         {
-            return new Post
+            var post = new Post
             {
                 Id = Guid.NewGuid(),
                 Embeddings = [.. Embeddings],
@@ -26,6 +27,8 @@ namespace Domain.Entities
                 Tags = [.. Tags],
                 CreatedOnUtc = DateTime.UtcNow
             };
+            post.RaiseDomainEvent(new PostCreatedDomainEvent(post.Id));
+            return post;
         }
     }
 }
