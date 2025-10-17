@@ -1,8 +1,8 @@
 using Elastic.Clients.Elasticsearch.Mapping;
 using Infrastructure.Abstractions;
-using Infrastructure.Docuemnts;
+using Infrastructure.ElasticSearch.Docuemnts;
 
-namespace Infrastructure.DocumentConfigs
+namespace Infrastructure.ElasticSearch.DocumentConfigs
 {
     public class PostDocumentConfig : IDocumentTypeConfig<PostDocuemnt>
     {

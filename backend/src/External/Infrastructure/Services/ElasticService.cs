@@ -6,8 +6,8 @@ using Application.Mappers;
 using Domain.Entities;
 using Elastic.Clients.Elasticsearch;
 using Elastic.Clients.Elasticsearch.QueryDsl;
-using Infrastructure.Docuemnts;
-using Infrastructure.DocumentConfigs;
+using Infrastructure.ElasticSearch.Docuemnts;
+using Infrastructure.ElasticSearch.DocumentConfigs;
 using Infrastructure.Mappers;
 
 namespace Infrastructure.Services;
@@ -31,7 +31,6 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
             .Size(requestDto.PageSize)
             .Sort(s => s
                 .Score(x => x.Order(SortOrder.Desc))
-                .Field(x => x.CreatedOnUtc, SortOrder.Desc)
             );
 
         if (!string.IsNullOrWhiteSpace(requestDto.SearchTerm))

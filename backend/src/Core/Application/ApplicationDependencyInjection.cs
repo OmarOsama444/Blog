@@ -5,7 +5,7 @@ using Application.Events;
 using Application.Interfaces;
 using Application.Services;
 using Application.Abstractions;
-using Domain.Abstractions;
+using Application.Pipelines;
 
 namespace Application;
 
@@ -26,6 +26,8 @@ public static class ApplicationDependencyInjection
             .AsImplementedInterfaces()
             .WithScopedLifetime()
         );
+        services.Decorate(typeof(IDomainEventHandler<>), typeof(LoggingDomainEventHandlerDecorator<>));
+        services.Decorate(typeof(IDomainEventHandler<>), typeof(OutboxIdempotentDomainEventHandlerDecorator<>));
         return services;
     }
 }

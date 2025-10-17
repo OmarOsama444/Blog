@@ -39,8 +39,8 @@ namespace Persistence.Repositories
                     CreatedOnUtc = x.CreatedOnUtc,
                     Tags = x.Tags
                 })
-                .Take(pageSize)
                 .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken);
         }
     }

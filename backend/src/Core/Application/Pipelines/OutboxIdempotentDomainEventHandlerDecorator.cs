@@ -1,11 +1,10 @@
 using Dapper;
 using Domain.Entities.Outbox;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Application.Abstractions;
 using Domain.Abstractions;
 
-namespace Persistence.Outbox;
+namespace Application.Pipelines;
 
 public class OutboxIdempotentDomainEventHandlerDecorator<TDomainEvent>(
     IDomainEventHandler<TDomainEvent> innerHandler,

@@ -15,7 +15,7 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
     {
         var existingPost = await postRepositroy.GetBySlug(createPostRequestDto.Slug, cancellationToken);
         if (existingPost is not null)
-            throw new ConflictException("Post.Slug.AlreadyExists", createPostRequestDto.Slug);
+            throw new ConflictException("Post.Slug.Conflict", createPostRequestDto.Slug);
         var text = PostTextData(createPostRequestDto.Title, createPostRequestDto.Content, createPostRequestDto.Tags);
         var embedd = await embeddingService.GenerateEmbedingFromText(text);
         var post = Post.Create(userId, createPostRequestDto.Slug, createPostRequestDto.Title, createPostRequestDto.Content, createPostRequestDto.Tags, embedd);

@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Application.Repositories;
 using Application.Abstractions;
-using Domain.Abstractions;
 using Persistence.Outbox;
 using Persistence.Repositories;
 
@@ -26,7 +25,6 @@ public static class PersistenceDependencyInjection
                 .UseSnakeCaseNamingConvention()
                 .AddInterceptors(sp.GetRequiredService<PublishOutboxMessagesInterceptor>());
         });
-        services.Decorate(typeof(IDomainEventHandler<>), typeof(OutboxIdempotentDomainEventHandlerDecorator<>));
         services.AddScoped<PublishOutboxMessagesInterceptor>();
         services.Configure<OutBoxOptions>(configuration.GetSection("OutBox"));
         services.AddScoped<IDbConnectionFactory>(x => new DbConnectionFactory(dbConnectionString));

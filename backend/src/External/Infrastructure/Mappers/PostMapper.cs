@@ -1,5 +1,5 @@
 using Domain.Entities;
-using Infrastructure.Docuemnts;
+using Infrastructure.ElasticSearch.Docuemnts;
 
 namespace Infrastructure.Mappers;
 

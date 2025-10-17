@@ -1,6 +1,5 @@
 using Application.Abstractions;
 using Application.Interfaces;
-using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Events;
 

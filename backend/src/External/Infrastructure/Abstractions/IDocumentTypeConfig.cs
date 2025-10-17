@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Elastic.Clients.Elasticsearch.Mapping;
-using Infrastructure.Docuemnts;
 
 namespace Infrastructure.Abstractions
 {

@@ -1,4 +1,4 @@
-namespace Infrastructure.Docuemnts;
+namespace Infrastructure.ElasticSearch.Docuemnts;
 
 public class PostDocuemnt
 {

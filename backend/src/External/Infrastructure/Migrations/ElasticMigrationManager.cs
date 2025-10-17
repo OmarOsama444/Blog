@@ -1,6 +1,6 @@
 using Elastic.Clients.Elasticsearch;
 using Infrastructure.Abstractions;
-using Infrastructure.DocumentConfigs;
+using Infrastructure.ElasticSearch.DocumentConfigs;
 
 namespace Infrastructure.Migrations;
 

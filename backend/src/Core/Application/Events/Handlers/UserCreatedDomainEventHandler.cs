@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Application.Abstractions;
 using Domain.Events;
-using Domain.Abstractions;
 using Domain.Entities;
 
 namespace Application.Events.Handlers;

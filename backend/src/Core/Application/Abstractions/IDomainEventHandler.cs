@@ -1,4 +1,6 @@
-namespace Domain.Abstractions;
+using Domain.Abstractions;
+
+namespace Application.Abstractions;
 
 public interface IDomainEventHandler<in TEvent> where TEvent : IDomainEvent
 {
