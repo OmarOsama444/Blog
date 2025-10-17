@@ -39,7 +39,10 @@ public static class InfrastructureDependencyInjection
         });
         services.AddScoped<IIdentityProviderService, IdentityProviderService>();
         services.AddScoped<IELasticService, ElasticService>();
-        services.AddScoped<IEmbeddingService, EmbeddingService>();
+        if (configuration.GetValue<bool>("UseDummyEmbeddingService"))
+            services.AddScoped<IEmbeddingService, EmbeddingDummyService>();
+        else
+            services.AddScoped<IEmbeddingService, EmbeddingService>();
         services.AddScoped<IClaimsTransformation, KeyCloackClaimsTransformation>();
         services.AddSingleton<ElasticMigrationManager>();
         services.AddAuthenticationInternal();
