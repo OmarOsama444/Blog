@@ -1,15 +1,17 @@
 using Application.Dtos.Requests;
 using Application.Dtos.Responses;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Extensions;
 
 namespace Presentation.Controllers.v1
 {
-    [Route("[controller]")]
+    [Route("api/v1/[controller]")]
     public class CommentController(ICommentService commentService) : ControllerBase
     {
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<CommentResponseDto>> CreateComment([FromBody] CreateCommentRequestDto request, CancellationToken cancellationToken)
         {
             var userid = User.GetUserId();

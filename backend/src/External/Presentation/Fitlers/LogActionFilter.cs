@@ -28,16 +28,15 @@ namespace Presentation.Fitlers
         public void OnActionExecuting(ActionExecutingContext context)
         {
             var actionName = context.ActionDescriptor.DisplayName;
-            var arguments = context.ActionArguments;
-            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, JsonSerializer.Serialize(arguments));
+            var arguments = context.ActionArguments.ToDictionary(kv => kv.Key, kv => kv.Value);
+            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, arguments);
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var actionName = context.ActionDescriptor.DisplayName;
-            var arguments = context.ActionArguments;
-
-            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, JsonSerializer.Serialize(arguments));
+            var arguments = context.ActionArguments.ToDictionary(kv => kv.Key, kv => kv.Value);
+            _logger.LogInformation("Starting action {ActionName} with args {@Args}", actionName, arguments);
 
             var executedContext = await next();
 

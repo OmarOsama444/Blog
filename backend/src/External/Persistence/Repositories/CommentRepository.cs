@@ -20,5 +20,12 @@ namespace Persistence.Repositories
                 .Where(c => c.PostId == PostId)
                 .ToListAsync();
         }
+
+        public async Task<ICollection<Comment>> GetByPostIdParentOnlyAsync(Guid UserId)
+        {
+            return await appDbContext.Comments
+                .Where(c => c.ParentId == null)
+                .ToListAsync();
+        }
     }
 }

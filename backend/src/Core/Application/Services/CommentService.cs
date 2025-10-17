@@ -36,7 +36,7 @@ namespace Application.Services
 
         public async Task<ICollection<CommentResponseDto>> GetCommentsByPostId(Guid PostId, CancellationToken cancellationToken)
         {
-            var comments = await commentRepository.GetByPostIdAsync(PostId);
+            var comments = await commentRepository.GetByPostIdParentOnlyAsync(PostId);
             return [.. comments.Select(x => x.ToCommentResponseDto())];
         }
 

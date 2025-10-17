@@ -10,5 +10,6 @@ namespace Application.Repositories
     {
         public Task<ICollection<Comment>> GetByPostIdAsync(Guid PostId);
         public Task<ICollection<Comment>> GetByParentCommentIdAsync(string CommentId);
+        public Task<ICollection<Comment>> GetByPostIdParentOnlyAsync(Guid UserId);
     }
 }
