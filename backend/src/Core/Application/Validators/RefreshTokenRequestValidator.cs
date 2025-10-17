@@ -7,9 +7,9 @@ using FluentValidation;
 
 namespace Application.Validators
 {
-    public class RefreshTokenRequestDtoValidator : AbstractValidator<RefreshTokenRequestDto>
+    public class RefreshTokenRequestValidator : AbstractValidator<RefreshTokenRequestDto>
     {
-        public RefreshTokenRequestDtoValidator()
+        public RefreshTokenRequestValidator()
         {
             RuleFor(x => x.Token).NotEmpty().WithMessage("Token is required.");
         }

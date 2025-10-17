@@ -14,6 +14,7 @@ namespace Domain.Entities
         public List<string> Tags { get; set; } = [];
         public List<float> Embeddings { get; set; } = [];
         public DateTime CreatedOnUtc { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = [];
         public static Post Create(Guid UserId, string Slug, string Title, string Content, ICollection<string> Tags, ICollection<float> Embeddings)
         {
             var post = new Post
