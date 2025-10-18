@@ -16,13 +16,13 @@ public class PostRatingDomainEventHandler(IGenericRepository<Post, Guid> postRep
             post.UpdateAverageRating(domainEvent.Rating, domainEvent.IsUpdate, domainEvent.OldRating);
             await unitOfWork.CommitTransactionAsync(cancellationToken);
             
-            /*var elasticPost = await elasticService.GetPostByIdAsync(post.Id, cancellationToken);
+            var elasticPost = await elasticService.GetPostByIdAsync(post.Id, cancellationToken);
             if (elasticPost != null)
             {
                 elasticPost.Rating = post.Rating;
                 elasticPost.TotalUsersRated = post.TotalUsersRated;
                 await elasticService.UpsertPostAsync(elasticPost, cancellationToken);
-            }*/
+            }
         }
         catch (Exception)
         {
