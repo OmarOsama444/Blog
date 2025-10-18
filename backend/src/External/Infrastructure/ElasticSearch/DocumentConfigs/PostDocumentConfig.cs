@@ -6,7 +6,7 @@ namespace Infrastructure.ElasticSearch.DocumentConfigs
 {
     public class PostDocumentConfig : IDocumentTypeConfig<PostDocuemnt>
     {
-        public int Version => 2;
+        public int Version => 3;
         public string IndexName => "posts";
         public string IndexVersionedName => $"{IndexName}_v{Version}";
         public TypeMappingDescriptor<PostDocuemnt> ConfigureIndex(TypeMappingDescriptor<PostDocuemnt> map)
@@ -24,6 +24,8 @@ namespace Infrastructure.ElasticSearch.DocumentConfigs
                         .Similarity(DenseVectorSimilarity.Cosine)
                         .Index(true)
                     )
+                    .FloatNumber(f => f.Rating)
+                    .IntegerNumber(i => i.TotalUsersRated)
                     .Date(d => d.CreatedOnUtc)
                 );
         }

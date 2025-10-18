@@ -5,12 +5,12 @@ using Domain.Events;
 
 namespace Application.Events.Handlers
 {
-    public class PostCreatedDomainEventHandler(IGenericRepository<Post, Guid> postRepo, IELasticService eLasticService) : IDomainEventHandler<PostCreatedDomainEvent>
+    public class PostCreatedDomainEventHandler(IGenericRepository<Post, Guid> postRepo, IElasticService elasticService) : IDomainEventHandler<PostCreatedDomainEvent>
     {
         public async Task HandleAsync(PostCreatedDomainEvent domainEvent, CancellationToken cancellationToken = default)
         {
             var post = await postRepo.GetById(domainEvent.PostId) ?? throw new Exception($"Post with ID {domainEvent.PostId} not found.");
-            await eLasticService.CreatePostAsync(post, cancellationToken);
+            await elasticService.UpsertPostAsync(post, cancellationToken);
         }
     }
 }

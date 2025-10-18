@@ -38,7 +38,7 @@ public static class InfrastructureDependencyInjection
             client.BaseAddress = new Uri(baseUrl);
         });
         services.AddScoped<IIdentityProviderService, IdentityProviderService>();
-        services.AddScoped<IELasticService, ElasticService>();
+        services.AddScoped<IElasticService, ElasticService>();
         if (configuration.GetValue<bool>("UseDummyEmbeddingService"))
             services.AddScoped<IEmbeddingService, EmbeddingDummyService>();
         else

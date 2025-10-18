@@ -12,9 +12,9 @@ using Infrastructure.Mappers;
 
 namespace Infrastructure.Services;
 
-public class ElasticService(ElasticsearchClient client, IEmbeddingService embeddingService) : IELasticService
+public class ElasticService(ElasticsearchClient client, IEmbeddingService embeddingService) : IElasticService
 {
-    public Task CreatePostAsync(Post post, CancellationToken cancellationToken = default)
+    public Task UpsertPostAsync(Post post, CancellationToken cancellationToken = default)
     {
         var postDocuemnt = post.ToDocument();
         return client.IndexAsync<PostDocuemnt>(postDocuemnt,
@@ -23,6 +23,16 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
                 .Index(new PostDocumentConfig().IndexVersionedName)
             , cancellationToken);
     }
+    
+    public async Task<Post?> GetPostByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var response = await client.GetAsync<PostDocuemnt>(id.ToString(), g => g.Index(new PostDocumentConfig().IndexName), cancellationToken);
+        if (!response.Found || response.Source is null)
+            return null;
+
+        return response.Source.ToEntity();
+    }
+    
     public async Task<ICollection<PostResponseDto>> SearchPostSemantic(SearchPostRequestDto requestDto)
     {
         var searchRequest = new SearchRequestDescriptor<PostDocuemnt>(new PostDocumentConfig().IndexName);
