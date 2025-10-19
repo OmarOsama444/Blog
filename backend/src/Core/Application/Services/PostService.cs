@@ -26,8 +26,8 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
 
     public async Task<ICollection<PostResponseDto>> SearchPost(SearchPostRequestDto searchPostRequestDto, CancellationToken cancellationToken)
     {
-        return await
-        postRepositroy.SearchByFullText(searchPostRequestDto.SearchTerm, searchPostRequestDto.Page, searchPostRequestDto.PageSize, cancellationToken);
+        return [.. (await
+        postRepositroy.SearchByFullText(searchPostRequestDto.SearchTerm, searchPostRequestDto.Page, searchPostRequestDto.PageSize, cancellationToken)).Select(x => x.ToPostResponseDto())];
     }
 
     public async Task DeletePost(Guid UserId, ICollection<Guid> PostIds, CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
     public async Task RatePost(Guid userId, Guid postId, RatePostRequestDto ratePostRequestDto)
     {
         _ = await postRepo.GetById(postId) ?? throw new NotFoundException("Post.NotFound", postId);
-        
+
         var existingPostRating = await postRatingRepository.GetUserRatingForPost(postId, userId);
         if (existingPostRating is not null)
             existingPostRating.Update(ratePostRequestDto.Rating);
@@ -55,7 +55,7 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
             var postRating = PostRating.Create(userId, postId, ratePostRequestDto.Rating);
             await postRatingRepository.Add(postRating);
         }
-        
+
         await unitOfWork.SaveChangesAsync();
     }
 
@@ -63,7 +63,7 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
     private string PostTextData(string Title, string Content, ICollection<string> Tags)
     {
         return $"""
-        Tital : {Title}
+        Title : {Title}
         Content : {Content}
         Tags : {string.Join(' ', Tags)}
         """;

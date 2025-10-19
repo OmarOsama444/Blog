@@ -17,7 +17,7 @@ namespace Persistence.Repositories
             return await context.Posts.FirstOrDefaultAsync(x => x.Slug == slug, cancellationToken);
         }
 
-        public async Task<ICollection<PostResponseDto>> SearchByFullText(string? Text, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        public async Task<ICollection<Post>> SearchByFullText(string? Text, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
         {
             IQueryable<Post> query = context
                 .Posts;
@@ -31,14 +31,6 @@ namespace Persistence.Repositories
                     );
             }
             return await query
-                .Select(x => new PostResponseDto
-                {
-                    Id = x.Id,
-                    Slug = x.Slug,
-                    Title = x.Title,
-                    CreatedOnUtc = x.CreatedOnUtc,
-                    Tags = x.Tags
-                })
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
