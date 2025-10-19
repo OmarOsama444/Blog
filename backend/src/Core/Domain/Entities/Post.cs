@@ -13,9 +13,13 @@ namespace Domain.Entities
         public string Content { get; set; } = string.Empty;
         public List<string> Tags { get; set; } = [];
         public List<float> Embeddings { get; set; } = [];
+        public float Rating { get; set; } = 0.0f;
+        public uint TotalUsersRated { get; set; }
         public DateTime CreatedOnUtc { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = [];
-        public static Post Create(Guid UserId, string Slug, string Title, string Content, ICollection<string> Tags, ICollection<float> Embeddings)
+
+        public static Post Create(Guid UserId, string Slug, string Title, string Content, ICollection<string> Tags,
+            ICollection<float> Embeddings)
         {
             var post = new Post
             {
@@ -31,9 +35,23 @@ namespace Domain.Entities
             post.RaiseDomainEvent(new PostCreatedDomainEvent(post.Id));
             return post;
         }
+
         public void DeletePost()
         {
             RaiseDomainEvent(new PostDeletedDomainEvent(Id));
+        }
+
+        public void UpdateAverageRating(byte rating, bool isUpdate = false, byte? oldRating = null)
+        {
+            if (isUpdate && oldRating.HasValue)
+            {
+                Rating = ((Rating * TotalUsersRated) - oldRating.Value + rating) / TotalUsersRated;
+            }
+            else
+            {
+                Rating = ((Rating * TotalUsersRated) + rating) / (TotalUsersRated + 1);
+                TotalUsersRated += 1;
+            }
         }
     }
 }

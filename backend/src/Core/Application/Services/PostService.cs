@@ -9,7 +9,7 @@ using Domain.Entities;
 
 namespace Application.Services;
 
-public class PostService(IEmbeddingService embeddingService, IGenericRepository<Post, Guid> postRepo, IPostRepositroy postRepositroy, IUnitOfWork unitOfWork) : IPostService
+public class PostService(IEmbeddingService embeddingService, IGenericRepository<Post, Guid> postRepo, IPostRepositroy postRepositroy, IPostRatingRepository postRatingRepository, IUnitOfWork unitOfWork) : IPostService
 {
     public async Task<PostResponseDto> CreatePostAsync(Guid userId, CreatePostRequestDto createPostRequestDto, CancellationToken cancellationToken)
     {
@@ -40,6 +40,23 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
             postRepo.Remove(post);
         }
         await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RatePost(Guid userId, Guid postId, RatePostRequestDto ratePostRequestDto)
+    {
+        _ = await postRepo.GetById(postId) ?? throw new NotFoundException("Post.NotFound", postId);
+        
+        var existingPostRating = await postRatingRepository.GetUserRatingForPost(postId, userId);
+        if (existingPostRating is not null)
+            existingPostRating.Update(ratePostRequestDto.Rating);
+
+        else
+        {
+            var postRating = PostRating.Create(userId, postId, ratePostRequestDto.Rating);
+            await postRatingRepository.Add(postRating);
+        }
+        
+        await unitOfWork.SaveChangesAsync();
     }
 
 

@@ -7,8 +7,9 @@ using Presentation.Extensions;
 
 namespace Presentation.Controllers.v1
 {
+    [ApiController]
     [Route("api/v1/[controller]")]
-    public class PostController(IPostService postService, IELasticService eLasticService) : ControllerBase
+    public class PostController(IPostService postService, IElasticService elasticService) : ControllerBase
     {
         [Authorize]
         [HttpPost]
@@ -29,7 +30,7 @@ namespace Presentation.Controllers.v1
         [HttpGet("semantic")]
         public async Task<ActionResult<ICollection<PostResponseDto>>> GetAllPosts([FromQuery] SearchPostRequestDto requestDto)
         {
-            return Ok(await eLasticService.SearchPostSemantic(requestDto));
+            return Ok(await elasticService.SearchPostSemantic(requestDto));
         }
         [Authorize]
         [HttpDelete]
@@ -38,6 +39,15 @@ namespace Presentation.Controllers.v1
             var userid = User.GetUserId();
             await postService.DeletePost(userid, PostIds);
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("{id}/rate")]
+        public async Task<ActionResult> RatePost([FromRoute] Guid id, [FromBody] RatePostRequestDto requestDto)
+        {
+            var userId = User.GetUserId();
+            await postService.RatePost(userId, id, requestDto);
+            return Ok();
         }
     }
 }

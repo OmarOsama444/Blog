@@ -4,8 +4,9 @@ using Domain.Entities;
 
 namespace Application.Interfaces;
 
-public interface IELasticService
+public interface IElasticService
 {
-    public Task CreatePostAsync(Post post, CancellationToken cancellationToken = default);
+    public Task UpsertPostAsync(Post post, CancellationToken cancellationToken = default);
+    public Task<Post?> GetPostByIdAsync(Guid id, CancellationToken cancellationToken = default);
     public Task<ICollection<PostResponseDto>> SearchPostSemantic(SearchPostRequestDto requestDto);
 }

@@ -10,4 +10,6 @@ public class PostDocuemnt
     public string Content { get; set; } = string.Empty;
     public DateTime CreatedOnUtc { get; set; }
     public float[] Embedding { get; set; } = [];
+    public float Rating { get; set; }
+    public uint TotalUsersRated { get; set; }
 }

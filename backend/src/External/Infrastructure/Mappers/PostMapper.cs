@@ -16,7 +16,9 @@ public static class PostMapper
             CreatedOnUtc = post.CreatedOnUtc,
             Slug = post.Slug,
             Tags = [.. post.Tags],
-            Embedding = [.. post.Embeddings]
+            Embedding = [.. post.Embeddings],
+            Rating = post.Rating,
+            TotalUsersRated = post.TotalUsersRated
         };
     }
 
@@ -31,7 +33,9 @@ public static class PostMapper
             CreatedOnUtc = document.CreatedOnUtc,
             Slug = document.Slug,
             Tags = [.. document.Tags],
-            Embeddings = [.. document.Embedding]
+            Embeddings = [.. document.Embedding],
+            Rating = document.Rating,
+            TotalUsersRated = document.TotalUsersRated
         };
     }
 }
