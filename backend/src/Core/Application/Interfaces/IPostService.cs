@@ -9,5 +9,5 @@ public interface IPostService
     public Task<PostResponseDto> CreatePostAsync(Guid userId, CreatePostRequestDto createPostRequestDto, CancellationToken cancellationToken = default);
     public Task<ICollection<PostResponseDto>> SearchPost(SearchPostRequestDto searchPostRequestDto, CancellationToken cancellationToken = default);
     public Task DeletePost(Guid UserId, ICollection<Guid> PostId, CancellationToken cancellationToken = default);
-    public Task RatePost(Guid userId, Guid postId, RatePostRequestDto ratePostRequestDto);
+    public Task RatePost(Guid userId, Guid postId, RatePostRequestDto ratePostRequestDto, CancellationToken cancellationToken = default);
 }

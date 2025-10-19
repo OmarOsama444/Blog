@@ -42,7 +42,7 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RatePost(Guid userId, Guid postId, RatePostRequestDto ratePostRequestDto)
+    public async Task RatePost(Guid userId, Guid postId, RatePostRequestDto ratePostRequestDto, CancellationToken cancellationToken)
     {
         _ = await postRepo.GetById(postId) ?? throw new NotFoundException("Post.NotFound", postId);
 
@@ -56,7 +56,7 @@ public class PostService(IEmbeddingService embeddingService, IGenericRepository<
             await postRatingRepository.Add(postRating);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
 

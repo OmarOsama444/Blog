@@ -23,7 +23,7 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
                 .Index(new PostDocumentConfig().IndexVersionedName)
             , cancellationToken);
     }
-    
+
     public async Task<Post?> GetPostByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var response = await client.GetAsync<PostDocuemnt>(id.ToString(), g => g.Index(new PostDocumentConfig().IndexName), cancellationToken);
@@ -32,7 +32,7 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
 
         return response.Source.ToEntity();
     }
-    
+
     public async Task<ICollection<PostResponseDto>> SearchPostSemantic(SearchPostRequestDto requestDto)
     {
         var searchRequest = new SearchRequestDescriptor<PostDocuemnt>(new PostDocumentConfig().IndexName);
@@ -59,15 +59,8 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
     private QueryDescriptor<PostDocuemnt> QuerySemanticSearch(QueryDescriptor<PostDocuemnt> q, string query, float[] embedding)
     {
         return q.ScriptScore(sc => sc
-            .Query(qq => qq
-                .MultiMatch(m => m
-                    .Fields(f => f.Title, f => f.Content, f => f.Tags)
-                    .Query(query)
-                    .Fuzziness("AUTO")
-                )
-            )
             .Script(ss => ss
-                .Source("0.7 * cosineSimilarity(params.queryVector, 'embedding') + 0.3 * _score")
+                .Source("cosineSimilarity(params.queryVector, 'embedding') + 1.0")
                 .Params(p => p.Add("queryVector", embedding))
             )
         );
