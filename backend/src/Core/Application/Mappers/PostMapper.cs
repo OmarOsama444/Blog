@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Dtos.Responses;
 using Domain.Entities;
 
@@ -15,6 +11,8 @@ namespace Application.Mappers
             {
                 Id = post.Id,
                 Slug = post.Slug,
+                Rating = post.Rating,
+                TotalRatings = post.TotalUsersRated,
                 Title = post.Title,
                 CreatedOnUtc = post.CreatedOnUtc,
                 Tags = post.Tags
