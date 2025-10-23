@@ -5,6 +5,7 @@ using Api.Middleware;
 using Api.Extensions;
 using Serilog;
 using Presentation;
+using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureSwagger();
@@ -29,6 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ExceptionLocalizationMiddleware>();
+app.UseHttpLogging();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
