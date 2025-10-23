@@ -13,8 +13,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public virtual DbSet<PostRating> PostRatings { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
     public virtual DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public virtual DbSet<UserRelation> UserRelations { get; set; }
     public virtual DbSet<OutboxConsumerMessage> OutboxConsumerMessages { get; set; }
-    
+
     private IDbContextTransaction? _transaction;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,7 +23,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfigurationsFromAssembly
         (AssemblyRefrence.Assembly);
     }
-    
+
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         if (_transaction != null)
@@ -50,11 +51,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         await _transaction.RollbackAsync(cancellationToken);
         await _transaction.DisposeAsync();
         _transaction = null;
-    }
-
-    public override void Dispose()
-    {
-        _transaction?.Dispose();
-        DisposeAsync();
     }
 }

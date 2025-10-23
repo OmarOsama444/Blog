@@ -20,6 +20,7 @@ public static class ApplicationDependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPostService, PostService>();
         services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IUserService, UserService>();
         // Register domain event handlers
         services.Scan(scan => scan
             .FromAssemblies(AssemblyRefrence.Assembly)

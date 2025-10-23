@@ -33,6 +33,7 @@ public static class PersistenceDependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPostRatingRepository, PostRatingRepository>();
         services.AddScoped<ICommentRepository, CommentRepository>();
+        services.AddScoped<IUserRelationRepository, UserRelationRepository>();
         services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<AppDbContext>());
         // adding quartz for background jobs 
         services.AddQuartz();

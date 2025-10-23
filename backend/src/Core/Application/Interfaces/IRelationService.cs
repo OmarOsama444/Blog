@@ -8,8 +8,8 @@ namespace Application.Interfaces
 {
     public interface IRelationService
     {
-        public Task CreateRelation(Guid FromId, Guid ToId, RelationType relationType);
-        public Task GetByRelation(Guid UserId, RelationType relationType, StatusType statusType, bool TwoWay = false);
-        public Task ApproveRelation(Guid UserId, RelationType relationType, StatusType statusType, bool TwoWay = false);
+        public Task ApproveFriendRequest(Guid ReciverId, Guid SenderId, CancellationToken cancellationToken);
+        public Task SendFriendRequest(Guid FromId, Guid ToId, CancellationToken cancellationToken);
+        public Task SendFollowRequest(Guid FromId, Guid ToId, CancellationToken cancellationToken);
     }
 }
