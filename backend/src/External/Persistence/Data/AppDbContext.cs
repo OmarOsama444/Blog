@@ -10,10 +10,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Post> Posts { get; set; }
-    public virtual DbSet<PostRating> PostRatings { get; set; }
+    public virtual DbSet<Profile> Profiles { get; set; }
     public virtual DbSet<Comment> Comments { get; set; }
-    public virtual DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public virtual DbSet<PostRating> PostRatings { get; set; }
     public virtual DbSet<UserRelation> UserRelations { get; set; }
+    public virtual DbSet<OutboxMessage> OutboxMessages { get; set; }
     public virtual DbSet<OutboxConsumerMessage> OutboxConsumerMessages { get; set; }
 
     private IDbContextTransaction? _transaction;

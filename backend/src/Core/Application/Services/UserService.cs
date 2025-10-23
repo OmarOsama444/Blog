@@ -12,7 +12,8 @@ namespace Application.Services;
 
 public class UserService(
 IUserRepository userRepository,
-IGenericRepository<User, Guid> userGenericRepository,
+IGenericRepository<User, Guid> UserRepo,
+IGenericRepository<Profile, Guid> ProfileRepo,
 IIdentityProviderService identityProviderService,
 ILogger<UserService> logger,
 IUnitOfWork unitOfWork) : IUserService
@@ -27,7 +28,9 @@ IUnitOfWork unitOfWork) : IUserService
         }
         string userIdentitfier = await identityProviderService.RegisterUserAsync(new UserModel(createUserRequestDto.Email, createUserRequestDto.Password, createUserRequestDto.FirstName, createUserRequestDto.LastName), cancellationToken);
         user = User.Create(createUserRequestDto.Email, createUserRequestDto.FirstName, createUserRequestDto.LastName, userIdentitfier);
-        userGenericRepository.Add(user);
+        UserRepo.Add(user);
+        var Profile = new Profile { Id = user.Id };
+        ProfileRepo.Add(Profile);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return user.Id;
     }
