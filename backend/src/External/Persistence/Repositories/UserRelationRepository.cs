@@ -18,11 +18,6 @@ namespace Persistence.Repositories
             return await result.CountAsync();
         }
 
-        public async Task<bool> Follows(Guid followerId, Guid userId)
-        {
-            return await context.UserRelations.AnyAsync(x => x.FromId == followerId && x.ToId == userId);
-        }
-
         public async Task<UserRelation?> GetByFromIdAndToIdAndRelation(Guid FromId, Guid ToId, RelationType relationType)
         {
             return await context.UserRelations

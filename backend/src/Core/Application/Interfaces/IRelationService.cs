@@ -10,6 +10,5 @@ namespace Application.Interfaces
     {
         public Task ApproveFriendRequest(Guid ReciverId, Guid SenderId, CancellationToken cancellationToken = default);
         public Task SendFriendRequest(Guid FromId, Guid ToId, CancellationToken cancellationToken = default);
-        public Task SendFollowRequest(Guid FromId, Guid ToId, CancellationToken cancellationToken = default);
     }
 }

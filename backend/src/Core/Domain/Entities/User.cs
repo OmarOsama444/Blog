@@ -16,6 +16,9 @@ public class User : Entity
     public virtual ICollection<Comment> Comments { get; set; } = [];
     public virtual ICollection<UserRelation> FromUserRelations { get; set; } = [];
     public virtual ICollection<UserRelation> ToUserRelations { get; set; } = [];
+    public virtual ICollection<ChatUser> ChatUsers { get; set; } = [];
+    public virtual ICollection<ChatMessage> SentMessages { get; set; } = [];
+    public virtual ICollection<ChatMessageSeen> SeenMessages { get; set; } = [];
     public virtual Profile Profile { get; set; } = default!;
     public static User Create(string email, string firstName, string lastName, string identityProviderId)
     {

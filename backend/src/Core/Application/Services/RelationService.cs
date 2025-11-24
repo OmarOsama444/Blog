@@ -66,31 +66,6 @@ namespace Application.Services
             await CreateFriendRequest(ToUserProfile, userRelationStatus, FromId, ToId);
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
-        public async Task SendFollowRequest(Guid FromId, Guid ToId, CancellationToken cancellationToken)
-        {
-            var FromUser = await UserRepo.GetById(FromId) ?? throw new NotFoundException("User.NotFound", FromId);
-            var ToUser = await UserRepo.GetById(ToId) ?? throw new NotFoundException("User.NotFound", ToId);
-            var ToUserProfile = await ProfileRepo.GetById(ToId) ?? throw new NotFoundException("User.Profile.NotFound", ToId);
-            var userRelationStatus = await GetStrangerRelationStatus(FromUser, ToUser);
-            await CheckIfUserIsEligibleToFollow(ToUserProfile, userRelationStatus, FromId, ToId);
-            await CreateFollowRequest(FromId, ToId);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-
-        private async Task CheckIfUserIsEligibleToFollow(Profile ToUserProfile, StrangerRelationStatus userRelationStatus, Guid FromId, Guid ToId)
-        {
-            // does the user have a pending friend request ? 
-            var userRelationFollow = await userRelationRepository.GetByFromIdAndToIdAndRelation(FromId, ToId, RelationType.Follow);
-            if (userRelationFollow != null)
-                throw new ConflictException("User.Follow.Request.Conflict", FromId, ToId);
-
-            // check if the reciver blocked the sender
-            var userRelationBlock = await userRelationRepository.GetByFromIdAndToIdAndRelation(FromId, ToId, RelationType.Block);
-            if (userRelationBlock != null)
-                throw new ConflictException("User.Friend.Request.Conflict", FromId, ToId);
-        }
-
         private async Task CheckIfUserIsEligibleToFriend(Profile ToUserProfile, StrangerRelationStatus userRelationStatus, Guid FromId, Guid ToId)
         {
 
@@ -143,11 +118,8 @@ namespace Application.Services
         {
             StrangerRelationStatus strangerRelationStatus = StrangerRelationStatus.Anonymos;
             bool isFriendOfFriend = await userRelationRepository.CountMutualFriends(FromUser.Id, ToUser.Id) > 0;
-            bool isFollower = await userRelationRepository.Follows(FromUser.Id, ToUser.Id);
             if (isFriendOfFriend)
                 strangerRelationStatus |= StrangerRelationStatus.FriendOfFriend;
-            if (isFollower)
-                strangerRelationStatus |= StrangerRelationStatus.Follower;
             return strangerRelationStatus;
         }
     }

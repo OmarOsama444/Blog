@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Presentation.Extensions;
-namespace Presentation.Hubs
+namespace Infrastructure.Hubs
 {
     [Authorize]
     public class OnlineHub() : Hub

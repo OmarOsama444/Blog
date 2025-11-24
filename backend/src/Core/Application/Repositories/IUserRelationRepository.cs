@@ -17,6 +17,5 @@ namespace Application.Repositories
         public Task<UserRelation?> GetByFromIdAndToIdAndRelation(Guid FromId, Guid ToId, RelationType relationType);
         public Task<UserRelation?> GetByFromIdAndToIdAndRelationForUpdate(Guid FromId, Guid ToId, RelationType relationType);
         public Task<int> CountMutualFriends(Guid userA, Guid userB);
-        public Task<bool> Follows(Guid followerId, Guid userId);
     }
 }
