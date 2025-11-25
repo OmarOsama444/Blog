@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Application.Dtos.Requests;
 using Application.Dtos.Responses;
 using Application.Interfaces;
@@ -66,4 +65,30 @@ public class ElasticService(ElasticsearchClient client, IEmbeddingService embedd
         );
     }
 
+    public async Task<ICollection<PostResponseDto>> SearchPostByTextFuzzyAsync(SearchPostRequestDto requestDto)
+    {
+        var searchRequest = new SearchRequestDescriptor<PostDocuemnt>(new PostDocumentConfig().IndexName);
+        searchRequest = searchRequest
+            .From((requestDto.Page - 1) * requestDto.PageSize)
+            .Size(requestDto.PageSize)
+            .Sort(s => s
+                .Score(x => x.Order(SortOrder.Desc))
+            );
+
+        if (!string.IsNullOrWhiteSpace(requestDto.SearchTerm))
+        {
+            searchRequest = searchRequest.Query(
+                q => q.MultiMatch(mm => mm
+                    .Fields(f => f.Title, f => f.Content, f => f.Tags)
+                    .Query(requestDto.SearchTerm)
+                    .Fuzziness("AUTO")
+            ));
+        }
+        else
+        {
+            searchRequest.Query(q => q.MatchAll());
+        }
+        var documents = await client.SearchAsync<PostDocuemnt>(searchRequest);
+        return [.. documents.Documents.Select(d => d.ToEntity().ToPostResponseDto())];
+    }
 }

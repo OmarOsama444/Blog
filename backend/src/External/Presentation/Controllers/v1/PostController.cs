@@ -26,7 +26,11 @@ namespace Presentation.Controllers.v1
         {
             return Ok(await postService.SearchPost(requestDto));
         }
-
+        [HttpGet("fuzzy")]
+        public async Task<ActionResult<ICollection<PostResponseDto>>> GetAllFuzzyPosts([FromQuery] SearchPostRequestDto requestDto)
+        {
+            return Ok(await elasticService.SearchPostByTextFuzzyAsync(requestDto));
+        }
         [HttpGet("semantic")]
         public async Task<ActionResult<ICollection<PostResponseDto>>> GetAllPosts([FromQuery] SearchPostRequestDto requestDto)
         {
