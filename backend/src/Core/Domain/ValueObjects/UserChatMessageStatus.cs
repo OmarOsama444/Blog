@@ -1,6 +1,6 @@
 namespace Domain.ValueObjects
 {
-    public enum UserChatMessageStatus
+    public enum ChatMessageStatus
     {
         Sent,
         Delivered,
