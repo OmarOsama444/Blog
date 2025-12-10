@@ -1,17 +1,14 @@
 using Application;
 using Infrastructure;
-using Persistence;
 using Api.Middleware;
 using Api.Extensions;
 using Serilog;
 using Presentation;
-using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureSwagger();
 builder.Services.AddControllers();
 builder.Services.AddApplication();
-builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPresentation();
 builder.Services.AddHttpContextAccessor();
@@ -26,10 +23,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.AddMigrations();
 }
-app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseMiddleware<HeaderToClaimsMiddleware>();
 app.UseMiddleware<ExceptionLocalizationMiddleware>();
 app.UseHttpLogging();
 app.UseHttpsRedirection();

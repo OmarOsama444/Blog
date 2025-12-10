@@ -11,7 +11,6 @@ namespace Presentation.Controllers.v1
     public class CommentController(ICommentService commentService) : ControllerBase
     {
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<CommentResponseDto>> CreateComment([FromBody] CreateCommentRequestDto request, CancellationToken cancellationToken)
         {
             var userid = User.GetUserId();

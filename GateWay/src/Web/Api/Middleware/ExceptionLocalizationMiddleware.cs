@@ -1,4 +1,4 @@
-using Domain.Abstractions;
+using Application.Abstractions;
 
 namespace Api.Middleware;
 
@@ -40,7 +40,7 @@ public class ExceptionLocalizationMiddleware
             {
                 code = ex.ErrorCode,
                 status = ex.StatusCode,
-                args = "[" + string.Join(",", ex.MessageArgs) + "]"
+                message = localizedMessage
             });
         }
         catch (Exception exception)
@@ -58,7 +58,7 @@ public class ExceptionLocalizationMiddleware
             {
                 code = "INTERNAL_ERROR",
                 status = 500,
-                args = "[]"
+                message = "INTERNAL_ERROR_500"
             });
         }
     }
