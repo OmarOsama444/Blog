@@ -16,13 +16,6 @@ namespace Presentation.Controllers.v1
             await relationService.SendFriendRequest(userId, id);
             return NoContent();
         }
-        [HttpPost("follow/{id}")]
-        public async Task<ActionResult> SendFollow([FromRoute] Guid id)
-        {
-            var userId = User.GetUserId();
-            await relationService.SendFollowRequest(userId, id);
-            return NoContent();
-        }
         [HttpPost("friend/{id}/approve")]
         public async Task<ActionResult> ApproveFriend([FromRoute] Guid id)
         {

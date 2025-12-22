@@ -53,15 +53,26 @@ services:
     mem_limit: 1g
     cpus: 1.0
 
-  blog.api:
+  blog.gateway:
     build:
-      context: ./backend
+      context: ./GateWay
       dockerfile: Dockerfile
-    container_name: blog.Api
+    container_name: blog.gateway
     env_file:
       - .env
     ports:
       - "5000:8080"
+
+  blog.user.service:
+    build:
+      context: ./Services/UserService
+      dockerfile: Dockerfile
+    container_name: blog.user.service
+    env_file:
+      - .env
+    ports:
+      - "5001:8080"
+
   blog.redis:
     image: redis:7.0-alpine
     container_name: blog.Redis
@@ -81,13 +92,3 @@ services:
       - "9200:9200"
     volumes:
       - ./containers/elasticsearch/data:/usr/share/elasticsearch/data
-
-  blog.kibana:
-    image: docker.elastic.co/kibana/kibana:9.1.5
-    container_name: blog.Kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://blog.elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - blog.elasticsearch

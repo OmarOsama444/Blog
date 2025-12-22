@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Application.Abstractions;
 
 namespace Api.Middleware;
@@ -15,51 +16,40 @@ public class ExceptionLocalizationMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        try
-        {
-            await _next(context);
-        }
-        catch (LocalizedHttpException ex)
-        {
-            var key = $"{ex.ErrorCode}_{ex.StatusCode}";
-            var localizedMessage = key + " " + string.Join(", ", ex.MessageArgs);
+        // var originalBodyStream = context.Response.Body;
 
-            _logger.LogWarning(ex,
-                "Localized exception occurred. Path: {Path}, Method: {Method}, StatusCode: {StatusCode}, ErrorCode: {ErrorCode}, Args: {Args}",
-                context.Request.Path,
-                context.Request.Method,
-                ex.StatusCode,
-                ex.ErrorCode,
-                string.Join(", ", ex.MessageArgs)
-            );
+        // await using var responseBody = new MemoryStream();
+        // context.Response.Body = responseBody;
+        await _next(context);
+        // int statusCode = context.Response.StatusCode;
+        // if (context.Response.ContentType?.Contains("application/json") == true)
+        // {
+        //     responseBody.Seek(0, SeekOrigin.Begin);
+        //     var bodyText = await new StreamReader(responseBody).ReadToEndAsync();
 
-            context.Response.StatusCode = ex.StatusCode;
-            context.Response.ContentType = "application/json";
+        //     // Deserialize original response
+        //     var json = JsonDocument.Parse(bodyText);
+        //     var root = json.RootElement;
 
-            await context.Response.WriteAsJsonAsync(new
-            {
-                code = ex.ErrorCode,
-                status = ex.StatusCode,
-                message = localizedMessage
-            });
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError(exception,
-                "Unhandled exception occurred. Path: {Path}, Method: {Method}",
-                context.Request.Path,
-                context.Request.Method
-            );
+        //     // Example: alter the response
+        //     var modified = new
+        //     {
+        //         code = root.GetProperty("code").GetInt32(),
+        //         status = root.GetProperty("status").GetInt32(),
+        //         message = root.GetProperty("args").GetString(),
+        //         timestamp = DateTime.UtcNow,
+        //         traceId = context.TraceIdentifier
+        //     };
 
-            context.Response.StatusCode = 500;
-            context.Response.ContentType = "application/json";
+        //     context.Response.Body = originalBodyStream;
+        //     context.Response.ContentLength = null;
 
-            await context.Response.WriteAsJsonAsync(new
-            {
-                code = "INTERNAL_ERROR",
-                status = 500,
-                message = "INTERNAL_ERROR_500"
-            });
-        }
+        //     await context.Response.WriteAsJsonAsync(modified);
+        //     return;
+        // }
+
+        // // Non-JSON → just pass throuxgh
+        // responseBody.Seek(0, SeekOrigin.Begin);
+        // await responseBody.CopyToAsync(originalBodyStream);
     }
 }

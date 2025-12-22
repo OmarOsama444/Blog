@@ -7,6 +7,9 @@ internal static class AuthenticationExtensions
 {
     internal static IServiceCollection AddAuthenticationInternal(this IServiceCollection services)
     {
+        services.AddAuthorizationBuilder()
+            .AddPolicy("Authenticated", policy =>
+                policy.RequireAuthenticatedUser());
         services.AddAuthentication().AddJwtBearer();
         services.AddAuthorization();
 

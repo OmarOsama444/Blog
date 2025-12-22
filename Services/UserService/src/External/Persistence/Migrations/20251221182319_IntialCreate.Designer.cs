@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence.Data;
@@ -11,9 +12,11 @@ using Persistence.Data;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251221182319_IntialCreate")]
+    partial class IntialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,147 @@ namespace Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active");
+
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_chat");
+
+                    b.ToTable("chat", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("chat_id");
+
+                    b.Property<DateTime>("LastStatusUpdateOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_status_update_on_utc");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message");
+
+                    b.Property<Guid>("SenderUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sender_user_id");
+
+                    b.Property<DateTime>("SentOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("sent_on_utc");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_chat_message");
+
+                    b.HasIndex("ChatId")
+                        .HasDatabaseName("ix_chat_message_chat_id");
+
+                    b.HasIndex("SenderUserId")
+                        .HasDatabaseName("ix_chat_message_sender_user_id");
+
+                    b.ToTable("chat_message", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.ChatRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on_utc");
+
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("from_user_id");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message");
+
+                    b.Property<Guid>("ToUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("to_user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_chat_request");
+
+                    b.HasIndex("FromUserId")
+                        .HasDatabaseName("ix_chat_request_from_user_id");
+
+                    b.HasIndex("ToUserId")
+                        .HasDatabaseName("ix_chat_request_to_user_id");
+
+                    b.ToTable("chat_request", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.ChatUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("chat_id");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_admin");
+
+                    b.Property<bool>("IsOwner")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_owner");
+
+                    b.Property<DateTime>("JoinedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("joined_on_utc");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_chat_user");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_chat_user_user_id");
+
+                    b.HasIndex("ChatId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_chat_user_chat_id_user_id");
+
+                    b.ToTable("chat_user", (string)null);
+                });
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
@@ -67,6 +211,31 @@ namespace Persistence.Migrations
                         .HasDatabaseName("ix_comments_user_id");
 
                     b.ToTable("comments", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.KgmEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Dolphone")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("dolphone");
+
+                    b.HasKey("Id")
+                        .HasName("pk_kgm_entities");
+
+                    b.HasIndex("Dolphone")
+                        .IsUnique()
+                        .HasDatabaseName("ix_kgm_entities_dolphone");
+
+                    b.ToTable("kgm_entities", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Outbox.OutboxConsumerMessage", b =>
@@ -296,6 +465,37 @@ namespace Persistence.Migrations
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ChatMessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("chat_message_id");
+
+                    b.Property<bool>("Relayed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("relayed");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_chat_message");
+
+                    b.HasIndex("ChatMessageId")
+                        .HasDatabaseName("ix_user_chat_message_chat_message_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_chat_message_user_id");
+
+                    b.ToTable("user_chat_message", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.UserRelation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -340,6 +540,48 @@ namespace Persistence.Migrations
                         .HasDatabaseName("ix_user_relations_from_id_to_id_relation");
 
                     b.ToTable("user_relations", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("Domain.Entities.Chat", "Chat")
+                        .WithMany("ChatMessages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_chat_message_chat_chat_id");
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_chat_message_users_sender_user_id");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ChatUser", b =>
+                {
+                    b.HasOne("Domain.Entities.Chat", "Chat")
+                        .WithMany("ChatUsers")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_chat_user_chat_chat_id");
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("ChatUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_chat_user_users_user_id");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
@@ -415,6 +657,27 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserChatMessage", b =>
+                {
+                    b.HasOne("Domain.Entities.ChatMessage", "ChatMessage")
+                        .WithMany("UserChatMessages")
+                        .HasForeignKey("ChatMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_chat_message_chat_message_chat_message_id");
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_chat_message_users_user_id");
+
+                    b.Navigation("ChatMessage");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.UserRelation", b =>
                 {
                     b.HasOne("Domain.Entities.User", "FromUser")
@@ -436,6 +699,18 @@ namespace Persistence.Migrations
                     b.Navigation("ToUser");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Chat", b =>
+                {
+                    b.Navigation("ChatMessages");
+
+                    b.Navigation("ChatUsers");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ChatMessage", b =>
+                {
+                    b.Navigation("UserChatMessages");
+                });
+
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -443,6 +718,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
+                    b.Navigation("ChatUsers");
+
                     b.Navigation("Comments");
 
                     b.Navigation("FromUserRelations");
@@ -451,6 +728,8 @@ namespace Persistence.Migrations
 
                     b.Navigation("Profile")
                         .IsRequired();
+
+                    b.Navigation("SentMessages");
 
                     b.Navigation("ToUserRelations");
                 });
