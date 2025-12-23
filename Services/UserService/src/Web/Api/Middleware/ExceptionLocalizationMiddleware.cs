@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Domain.Abstractions;
 
 namespace Api.Middleware;
@@ -35,12 +36,12 @@ public class ExceptionLocalizationMiddleware
 
             context.Response.StatusCode = ex.StatusCode;
             context.Response.ContentType = "application/json";
-
+            string[] args = ex.MessageArgs.Where(arg => arg != null).Select(arg => arg.ToString()!).ToArray();
             await context.Response.WriteAsJsonAsync(new
             {
                 code = ex.ErrorCode,
                 status = ex.StatusCode,
-                args = "[" + string.Join(",", ex.MessageArgs) + "]"
+                args = JsonSerializer.Serialize<string[]>(args)
             });
         }
         catch (Exception exception)

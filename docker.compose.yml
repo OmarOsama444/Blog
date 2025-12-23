@@ -9,7 +9,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./containers/postgresql/data/:/var/lib/postgresql/data
+      - ./containers/postgresql/data/:/var/lib/postgresql/18/data
     ports:
       - "15432:5432"
     mem_limit: 256m
@@ -23,7 +23,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./containers/postgresql/identity_data/:/var/lib/postgresql/data
+      - ./containers/postgresql/identity_data/:/var/lib/postgresql/18/data
     ports:
       - "25433:5432"
     mem_limit: 256m
