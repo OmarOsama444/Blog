@@ -4,9 +4,6 @@ using Api.Middleware;
 using Api.Extensions;
 using Serilog;
 using Presentation;
-using Yarp.ReverseProxy.Transforms;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureSwagger();
@@ -15,33 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddPresentation();
 builder.Services.AddHttpContextAccessor();
-builder.Services
-    .AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
-    .AddTransforms(context =>
-    {
-        context.AddRequestTransform(async transformContext =>
-        {
-            var httpContext = transformContext.HttpContext;
-            var user = httpContext.User;
-
-            if (user?.Identity?.IsAuthenticated == true)
-            {
-                var userId = user.FindFirst("sub")?.Value;
-                var email = user.FindFirst("email")?.Value;
-                var role = user.FindAll("role");
-
-                if (!string.IsNullOrEmpty(userId))
-                    transformContext.ProxyRequest.Headers.Add("X-User-Id", userId);
-
-                if (!string.IsNullOrEmpty(email))
-                    transformContext.ProxyRequest.Headers.Add("X-User-Email", email);
-
-                if (!role.IsNullOrEmpty())
-                    transformContext.ProxyRequest.Headers.Add("X-User-Role", JsonSerializer.Serialize(role.ToList()));
-            }
-        });
-    });
+builder.Services.AddLocalizationServices();
+builder.Services.ConfigureReverseProxy(builder.Configuration);
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
@@ -54,6 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseLocalization();
 app.UseMiddleware<ExceptionLocalizationMiddleware>();
 app.UseHttpLogging();
 app.UseHttpsRedirection();
