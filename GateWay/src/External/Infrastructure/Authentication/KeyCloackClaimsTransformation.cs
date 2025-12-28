@@ -14,16 +14,45 @@ namespace Infrastructure.Authentication
         {
             var identity = (ClaimsIdentity)principal.Identity!;
 
-            var realmRoles = principal.FindFirst("realm_access")?.Value;
-            if (realmRoles != null)
+            // Realm roles
+            var realmAccess = principal.FindFirst("realm_access")?.Value;
+            if (realmAccess != null)
             {
-                var roles = JsonDocument.Parse(realmRoles).RootElement
-                    .GetProperty("roles")
-                    .EnumerateArray()
-                    .Select(r => r.GetString());
+                using var doc = JsonDocument.Parse(realmAccess);
+                if (doc.RootElement.TryGetProperty("roles", out var roles))
+                {
+                    foreach (var role in roles.EnumerateArray())
+                    {
+                        identity.AddClaim(
+                            new Claim(ClaimTypes.Role, role.GetString()!)
+                        );
+                    }
+                }
+            }
 
-                foreach (var role in roles)
-                    identity.AddClaim(new Claim(ClaimTypes.Role, role!));
+            // Client roles
+            var resourceAccess = principal.FindFirst("resource_access")?.Value;
+            if (resourceAccess != null)
+            {
+                using var doc = JsonDocument.Parse(resourceAccess);
+
+                foreach (var client in doc.RootElement.EnumerateObject())
+                {
+                    var clientName = client.Name;
+
+                    if (!client.Value.TryGetProperty("roles", out var roles))
+                        continue;
+
+                    foreach (var role in roles.EnumerateArray())
+                    {
+                        identity.AddClaim(
+                            new Claim(
+                                ClaimTypes.Role,
+                                $"{clientName}:{role.GetString()}"
+                            )
+                        );
+                    }
+                }
             }
 
             return Task.FromResult(principal);
