@@ -30,7 +30,7 @@ services:
     cpus: 0.25
 
   blog.identity:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:26.3.2
     container_name: blog.Identity
     command: start-dev --import-realm
     environment:
